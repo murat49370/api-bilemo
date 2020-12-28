@@ -51,7 +51,6 @@ class Customer
     /**
      * @var User
      * @ORM\ManyToOne(targetEntity="User")
-     * @Groups({"get"})
      */
     private User $user;
 
