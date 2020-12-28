@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CustomerRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
@@ -16,35 +17,41 @@ class Customer
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get"})
      */
     private ?int $id;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get"})
      */
     private string $email;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get"})
      */
     private string $firstName;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get"})
      */
     private string $lastName;
 
     /**
      * @ORM\Column(type="datetime_immutable")
+     * @Groups({"get"})
      */
     private ?DateTimeInterface $registeredAt;
 
     /**
      * @var User
      * @ORM\ManyToOne(targetEntity="User")
+     * @Groups({"get"})
      */
     private User $user;
 

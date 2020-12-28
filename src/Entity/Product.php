@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\ProductRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -16,6 +17,7 @@ class Product
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"get"})
      */
     private ?int $id;
 
@@ -27,48 +29,56 @@ class Product
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get"})
      */
     private string $title;
 
     /**
      * @var string
      * @ORM\Column(type="text")
+     * @Groups({"get"})
      */
     private string $content;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
+     * @Groups({"get"})
      */
     private int $stock;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get"})
      */
     private string $reference;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get"})
      */
     private string $brand;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get"})
      */
     private string $model;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
+     * @Groups({"get"})
      */
     private string $camera;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
+     * @Groups({"get"})
      */
     private int $screenSize;
 
