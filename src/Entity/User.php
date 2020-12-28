@@ -6,6 +6,7 @@ use App\Repository\UserRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -13,7 +14,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="`user`")
  * @UniqueEntity("email")
  */
-class User
+class User implements UserInterface
 {
     /**
      * @var int|null
@@ -48,6 +49,10 @@ class User
     private ?DateTimeInterface $registeredAt;
 
 
+    public function __construct()
+    {
+        $this->registeredAt = new \DateTimeImmutable();
+    }
 
 
     /**
@@ -134,5 +139,28 @@ class User
         return $this;
     }
 
+    /**
+     * @return string[]
+     */
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
 
+
+    public function getSalt()
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return $this->email;
+    }
+
+    public function eraseCredentials()
+    {
+    }
 }

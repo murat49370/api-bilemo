@@ -48,6 +48,11 @@ class Customer
      */
     private User $user;
 
+    public function __construct()
+    {
+        $this->registeredAt = new \DateTimeImmutable();
+    }
+
 
     /**
      * @return int|null
