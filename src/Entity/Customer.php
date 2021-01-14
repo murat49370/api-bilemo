@@ -6,9 +6,33 @@ use App\Repository\CustomerRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Hateoas\Configuration\Annotation as Hateoas;
+use JMS\Serializer\Annotation as Serializer;
+use Nelmio\ApiDocBundle\Annotation\Model;
+
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
+ *
+ * @Hateoas\Relation(
+ *     "self",
+ *     href = @Hateoas\Route(
+ *          "api_customers_item_get",
+ *          parameters = { "id" = "expr(object.getId())" },
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups={"get"})
+ * )
+ *
+ * @Hateoas\Relation(
+ *     "list",
+ *     href = @Hateoas\Route(
+ *          "api_customers_collection_get",
+ *          absolute = true
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(groups={"get"})
+ * )
+ *
  */
 class Customer
 {

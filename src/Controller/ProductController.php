@@ -9,6 +9,8 @@ use App\Repository\ProductRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGenerator;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -18,6 +20,13 @@ use Symfony\Component\Serializer\SerializerInterface;
  */
 class ProductController extends AbstractController
 {
+
+    private UrlGeneratorInterface $router;
+
+    public function __construct(UrlGeneratorInterface $router)
+    {
+        $this->router = $router;
+    }
 
     /**
      * @Route(name="api_products_collection_get", methods={"GET"})
@@ -43,8 +52,33 @@ class ProductController extends AbstractController
      */
     public function item(Product $product, SerializerInterface $serializer): JsonResponse
     {
+        $absoluteUrl = $this->router->generate('api_products_item_get', ['id' => $product->getId()], urlGeneratorInterface::ABSOLUTE_URL);
+        
+        $response = [
+            'id' => $product->getId(),
+            'title' => $product->getTitle(),
+            'content' => $product->getContent(),
+            'stock' => $product->getStock(),
+            'reference' => $product->getReference(),
+            'brand' => $product->getBrand(),
+            'model' => $product->getModel(),
+            'camera' => $product->getCamera(),
+            'screenSize' => $product->getScreenSize(),
+            '_link' => [
+                'self' => [
+                    'href' => $absoluteUrl
+                ],
+                'modify' => [
+                    'href' => $absoluteUrl
+                ],
+                'delete' => [
+                    'href' => $absoluteUrl
+                ]
+            ]
+        ];
+
         return new JsonResponse(
-            $serializer->serialize($product, "json", ["groups" => "get"]),
+            $serializer->serialize($response, "json"),
             JsonResponse::HTTP_OK,
             [],
             true

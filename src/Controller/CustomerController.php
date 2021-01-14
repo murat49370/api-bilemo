@@ -17,6 +17,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
+use OpenApi\Annotations as OA;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\Request\ParamFetcherInterface;
+
 
 
 /**
@@ -24,8 +31,15 @@ use Symfony\Component\Serializer\SerializerInterface;
  * @package App\Controller
  * @Route("/customers")
  */
-class CustomerController extends AbstractController
+class CustomerController extends AbstractFOSRestController
 {
+
+    private UrlGeneratorInterface $router;
+
+    public function __construct(UrlGeneratorInterface $router)
+    {
+        $this->router = $router;
+    }
 
     /**
      * @Route(name="api_customers_collection_get", methods={"GET"})
@@ -57,13 +71,50 @@ class CustomerController extends AbstractController
      * @param SerializerInterface $serializer
      * @param TokenStorageInterface $tokenStorage
      * @return JsonResponse
+     *
+     * @OA\Response(
+     *     response=200,
+     *     description="Returns customer",
+     *     @OA\JsonContent(
+     *        type="array",
+     *        @OA\Items(ref=@Model(type=Customer::class, groups={"get"}))
+     *     )
+     * )
+     * @OA\Parameter(
+     *     name="order",
+     *     in="query",
+     *     description="The field used to order rewards",
+     *     @OA\Schema(type="string")
+     * )
+     * @OA\Tag(name="rewards")
+     * @Security(name="Bearer")
      */
     public function item(Customer $customer, SerializerInterface $serializer, TokenStorageInterface $tokenStorage): JsonResponse
     {
         if ($customer->getUser() === $tokenStorage->getToken()->getUser())
         {
+            $absoluteUrl = $this->router->generate('api_customers_item_get', ['id' => $customer->getId()], urlGeneratorInterface::ABSOLUTE_URL);
+
+            $response = [
+                'id' => $customer->getId(),
+                'email' => $customer->getEmail(),
+                'firstName' => $customer->getFirstName(),
+                'lastName' => $customer->getLastName(),
+                'registredAt' => $customer->getRegisteredAt(),
+                '_link' => [
+                    'self' => [
+                        'href' => $absoluteUrl
+                    ],
+                    'modify' => [
+                        'href' => $absoluteUrl
+                    ],
+                    'delete' => [
+                        'href' => $absoluteUrl
+                    ]
+                ]
+            ];
             return new JsonResponse(
-                $serializer->serialize($customer, "json", ["groups" => "get"]),
+                $serializer->serialize($response, "json"),
                 JsonResponse::HTTP_OK,
                 [],
                 true
@@ -106,8 +157,28 @@ class CustomerController extends AbstractController
         $entityManager->persist($customer);
         $entityManager->flush();
 
+        $absoluteUrl = $this->router->generate('api_customers_item_get', ['id' => $customer->getId()], urlGeneratorInterface::ABSOLUTE_URL);
+        $response = [
+            'id' => $customer->getId(),
+            'email' => $customer->getEmail(),
+            'firstName' => $customer->getFirstName(),
+            'lastName' => $customer->getLastName(),
+            'registredAt' => $customer->getRegisteredAt(),
+            '_link' => [
+                'self' => [
+                    'href' => $absoluteUrl
+                ],
+                'modify' => [
+                    'href' => $absoluteUrl
+                ],
+                'delete' => [
+                    'href' => $absoluteUrl
+                ]
+            ]
+        ];
+
         return new JsonResponse(
-            $serializer->serialize($customer, "json", ["groups" => "get"]),
+            $serializer->serialize($response, "json"),
             JsonResponse::HTTP_CREATED,
             ["Location" => $urlGenerator->generate("api_customers_item_get", ["id" => $customer->getId()])],
             true
