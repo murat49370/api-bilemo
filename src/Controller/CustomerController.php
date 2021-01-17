@@ -42,11 +42,26 @@ class CustomerController extends AbstractFOSRestController
     }
 
     /**
+     * @OA\Get(
+     *     tags={"customer"},
+     *     description="Get all customers.",
+     *     path="/customers",
+     *     security={"bearer"},
+     *     @OA\Response(
+     *          response="200",
+     *          description="Customers liste",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Customer")),
+     *     ),
+     *     @OA\Response(response="401", ref="#/components/responses/TokenNotFound"),
+     * )
+     *
      * @Route(name="api_customers_collection_get", methods={"GET"})
      * @param CustomerRepository $customerRepository
      * @param SerializerInterface $serializer
      * @param TokenStorageInterface $tokenStorage
      * @return JsonResponse
+     *
+     *
      */
     public function collection(
         CustomerRepository $customerRepository,
@@ -66,28 +81,30 @@ class CustomerController extends AbstractFOSRestController
     }
 
     /**
+     * @OA\Get(
+     *     tags={"customer"},
+     *     description="Get customer by ID",
+     *     path="/customers/{id}",
+     *     security={"bearer"},
+     *     @OA\Parameter(ref="#/components/parameters/id"),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Customer detaille",
+     *          @OA\JsonContent(ref="#/components/schemas/Customer"),
+     *     ),
+     *     @OA\Response(response="404", ref="#/components/responses/NotFound"),
+     *     @OA\Response(response="400", ref="#/components/responses/InvalidID"),
+     *     @OA\Response(response="401", ref="#/components/responses/TokenNotFound"),
+     *
+     * )
+     *
      * @Route("/{id}", name="api_customers_item_get", methods={"GET"})
      * @param Customer $customer
      * @param SerializerInterface $serializer
      * @param TokenStorageInterface $tokenStorage
      * @return JsonResponse
      *
-     * @OA\Response(
-     *     response=200,
-     *     description="Returns customer",
-     *     @OA\JsonContent(
-     *        type="array",
-     *        @OA\Items(ref=@Model(type=Customer::class, groups={"get"}))
-     *     )
-     * )
-     * @OA\Parameter(
-     *     name="order",
-     *     in="query",
-     *     description="The field used to order rewards",
-     *     @OA\Schema(type="string")
-     * )
-     * @OA\Tag(name="rewards")
-     * @Security(name="Bearer")
+     *
      */
     public function item(Customer $customer, SerializerInterface $serializer, TokenStorageInterface $tokenStorage): JsonResponse
     {
@@ -130,6 +147,30 @@ class CustomerController extends AbstractFOSRestController
 
 
     /**
+     * @OA\Post(
+     *     tags={"customer"},
+     *     description="Create new customer.",
+     *     path="/customers",
+     *     security={"bearer"},
+     *     @OA\RequestBody(
+     *          request="CreatePost",
+     *          required=true,
+     *          @OA\JsonContent(
+     *              required={"email", "firstName", "lastName"},
+     *              @OA\Property(type="string", property="email"),
+     *              @OA\Property(type="string", property="firstName"),
+     *              @OA\Property(type="string", property="lastName"),
+     *          )
+     *
+     *     ),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Customer create",
+     *          @OA\JsonContent(ref="#/components/schemas/Customer"),
+     *     )
+     *
+     * )
+     *
      * @Route(name="api_customers_collection_post", methods={"POST"})
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -187,6 +228,22 @@ class CustomerController extends AbstractFOSRestController
     }
 
     /**
+     * @OA\Delete(
+     *     tags={"customer"},
+     *     description="Delete customer by ID",
+     *     path="/customers/{id}",
+     *     security={"bearer"},
+     *     @OA\Parameter(ref="#/components/parameters/id"),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Customer delete",
+     *          @OA\JsonContent(ref="#/components/schemas/Customer"),
+     *     ),
+     *     @OA\Response(response="404", ref="#/components/responses/NotFound"),
+     *     @OA\Response(response="400", ref="#/components/responses/InvalidID"),
+     *     @OA\Response(response="401", ref="#/components/responses/TokenNotFound"),
+     * )
+     *
      * @Route("/{id}", name="api_customers_item_delete", methods={"DELETE"})
      * @param Customer $customer
      * @param EntityManagerInterface $entityManager

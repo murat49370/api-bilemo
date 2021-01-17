@@ -6,37 +6,21 @@ use App\Repository\CustomerRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
-use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
+
 
 
 /**
+ * @OA\Schema()
+ *
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
- *
- * @Hateoas\Relation(
- *     "self",
- *     href = @Hateoas\Route(
- *          "api_customers_item_get",
- *          parameters = { "id" = "expr(object.getId())" },
- *          absolute = true
- *      ),
- *      exclusion = @Hateoas\Exclusion(groups={"get"})
- * )
- *
- * @Hateoas\Relation(
- *     "list",
- *     href = @Hateoas\Route(
- *          "api_customers_collection_get",
- *          absolute = true
- *      ),
- *      exclusion = @Hateoas\Exclusion(groups={"get"})
- * )
  *
  */
 class Customer
 {
     /**
+     * @OA\Property(type="integer")
      * @var int|null
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -46,6 +30,7 @@ class Customer
     private ?int $id;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Groups({"get"})
@@ -53,6 +38,7 @@ class Customer
     private string $email;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Groups({"get"})
@@ -60,6 +46,7 @@ class Customer
     private string $firstName;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Groups({"get"})
@@ -67,6 +54,7 @@ class Customer
     private string $lastName;
 
     /**
+     * @OA\Property(type="string", format="date-time")
      * @ORM\Column(type="datetime_immutable")
      * @Groups({"get"})
      */

@@ -29,6 +29,19 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *     tags={"product"},
+     *     description="Get all products.",
+     *     path="/products",
+     *     security={"bearer"},
+     *     @OA\Response(
+     *          response="200",
+     *          description="Products liste",
+     *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Product")),
+     *     ),
+     *     @OA\Response(response="401", ref="#/components/responses/TokenNotFound"),
+     * )
+     *
      * @Route(name="api_products_collection_get", methods={"GET"})
      * @param ProductRepository $productRepository
      * @param SerializerInterface $serializer
@@ -45,6 +58,22 @@ class ProductController extends AbstractController
     }
 
     /**
+     * @OA\Get(
+     *     tags={"product"},
+     *     description="Get product by ID",
+     *     path="/products/{id}",
+     *     security={"bearer"},
+     *     @OA\Parameter(ref="#/components/parameters/id"),
+     *     @OA\Response(
+     *          response="200",
+     *          description="Product detaille",
+     *          @OA\JsonContent(ref="#/components/schemas/Product"),
+     *     ),
+     *     @OA\Response(response="404", ref="#/components/responses/NotFound"),
+     *     @OA\Response(response="400", ref="#/components/responses/InvalidID"),
+     *     @OA\Response(response="401", ref="#/components/responses/TokenNotFound"),
+     * )
+     *
      * @Route("/{id}", name="api_products_item_get", methods={"GET"})
      * @param Product $product
      * @param SerializerInterface $serializer

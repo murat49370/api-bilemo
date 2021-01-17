@@ -6,8 +6,13 @@ use App\Repository\ProductRepository;
 use DateTimeInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use OpenApi\Annotations as OA;
+
+
 
 /**
+ * @OA\Schema
+ *
  * @ORM\Entity(repositoryClass=ProductRepository::class)
  */
 class Product
@@ -27,6 +32,7 @@ class Product
     private DateTimeInterface $createAt;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Groups({"get"})
@@ -34,6 +40,7 @@ class Product
     private string $title;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="text")
      * @Groups({"get"})
@@ -41,6 +48,7 @@ class Product
     private string $content;
 
     /**
+     * @OA\Property(type="integer")
      * @var int
      * @ORM\Column(type="integer")
      * @Groups({"get"})
@@ -48,6 +56,7 @@ class Product
     private int $stock;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Groups({"get"})
@@ -55,6 +64,7 @@ class Product
     private string $reference;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Groups({"get"})
@@ -62,6 +72,7 @@ class Product
     private string $brand;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Groups({"get"})
@@ -69,6 +80,7 @@ class Product
     private string $model;
 
     /**
+     * @OA\Property(type="string")
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Groups({"get"})
@@ -76,6 +88,7 @@ class Product
     private string $camera;
 
     /**
+     * @OA\Property(type="integer")
      * @var int
      * @ORM\Column(type="integer")
      * @Groups({"get"})
