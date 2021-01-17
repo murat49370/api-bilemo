@@ -1,0 +1,15 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API Bilemo",
+        "version": "0.1"
+    },
+    "servers": [
+        {
+            "url": "http://bilemo.com/api",
+            "description": "Bilemo API"
+        }
+    ],
+    "swagger": "2.0",
+    "paths": {}
+}

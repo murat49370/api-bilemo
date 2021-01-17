@@ -1,0 +1,55 @@
+openapi: 3.0.0
+info:
+  title: 'API Bilemo'
+  version: '0.1'
+servers:
+  -
+    url: 'http://bilemo.com/api'
+    description: 'Bilemo API'
+paths:
+  /customers:
+    get:
+      operationId: 'App\Controller\CustomerController::collection'
+      responses:
+        '200':
+          description: 'Customers liste'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+  '/customers/{id}':
+    get:
+      operationId: 'App\Controller\CustomerController::item'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Customer ID'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Customer detaille'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+components:
+  schemas:
+    Customer:
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        registeredAt:
+          type: string
+          format: date-time
+      type: object
