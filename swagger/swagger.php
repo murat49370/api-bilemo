@@ -6,7 +6,7 @@ use OpenApi\Annotations as OA;
 /**
  * @OA\Info(title="API Bilemo", version="0.1")
  * @OA\Server(
- *     url="http://bilemo.com/api",
+ *     url="http://localhost:8000/api",
  *     description="Bilemo API"
  * )
  * @OA\SecurityScheme(
@@ -14,8 +14,11 @@ use OpenApi\Annotations as OA;
  *     securityScheme="bearer",
  *     type="apiKey",
  *     in="header",
- *     name="bearer",
+ *     name="Authorization",
  * )
+ *
+ *
+ *
  */
 
 

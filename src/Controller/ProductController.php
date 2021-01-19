@@ -12,6 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use OpenApi\Annotations as OA;
 
 /**
  * Class ProductController
@@ -33,7 +34,9 @@ class ProductController extends AbstractController
      *     tags={"product"},
      *     description="Get all products.",
      *     path="/products",
-     *     security={"bearer"},
+     *     security={{
+     *     "bearer":{}
+     *     }},
      *     @OA\Response(
      *          response="200",
      *          description="Products liste",
@@ -62,7 +65,9 @@ class ProductController extends AbstractController
      *     tags={"product"},
      *     description="Get product by ID",
      *     path="/products/{id}",
-     *     security={"bearer"},
+     *     security={{
+     *     "bearer":{}
+     *     }},
      *     @OA\Parameter(ref="#/components/parameters/id"),
      *     @OA\Response(
      *          response="200",
