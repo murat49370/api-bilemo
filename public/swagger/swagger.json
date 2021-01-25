@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://bilemo.com/api",
+            "url": "http://localhost:8000/api",
             "description": "Bilemo API"
         }
     ],
@@ -31,14 +31,11 @@
                                 }
                             }
                         }
-                    },
-                    "401": {
-                        "$ref": "#/components/responses/TokenNotFound"
                     }
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearer": []
                     }
                 ]
             },
@@ -362,7 +359,7 @@
         "securitySchemes": {
             "bearer": {
                 "type": "apiKey",
-                "name": "bearer",
+                "name": "Authorization",
                 "in": "header",
                 "bearerFormat": "JWT"
             }

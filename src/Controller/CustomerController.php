@@ -46,13 +46,15 @@ class CustomerController extends AbstractFOSRestController
      *     tags={"customer"},
      *     description="Get all customers.",
      *     path="/customers",
-     *     security={"bearer"},
+     *     security={{
+     *     "bearer":{}
+     *     }},
      *     @OA\Response(
      *          response="200",
      *          description="Customers liste",
      *          @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Customer")),
      *     ),
-     *     @OA\Response(response="401", ref="#/components/responses/TokenNotFound"),
+     *
      * )
      *
      * @Route(name="api_customers_collection_get", methods={"GET"})
@@ -85,7 +87,9 @@ class CustomerController extends AbstractFOSRestController
      *     tags={"customer"},
      *     description="Get customer by ID",
      *     path="/customers/{id}",
-     *     security={"bearer"},
+     *     security={{
+     *     "bearer":{}
+     *     }},
      *     @OA\Parameter(ref="#/components/parameters/id"),
      *     @OA\Response(
      *          response="200",
@@ -151,7 +155,9 @@ class CustomerController extends AbstractFOSRestController
      *     tags={"customer"},
      *     description="Create new customer.",
      *     path="/customers",
-     *     security={"bearer"},
+     *     security={{
+     *     "bearer":{}
+     *     }},
      *     @OA\RequestBody(
      *          request="CreatePost",
      *          required=true,
@@ -232,7 +238,9 @@ class CustomerController extends AbstractFOSRestController
      *     tags={"customer"},
      *     description="Delete customer by ID",
      *     path="/customers/{id}",
-     *     security={"bearer"},
+     *     security={{
+     *     "bearer":{}
+     *     }},
      *     @OA\Parameter(ref="#/components/parameters/id"),
      *     @OA\Response(
      *          response="200",
