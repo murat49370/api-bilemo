@@ -1,4 +1,4 @@
-# P7-BileMo
+# P7 - API Bilemo
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/ffbadec3f8b12c957b82/maintainability)](https://codeclimate.com/github/murat49370/api-bilemo/maintainability)
 
