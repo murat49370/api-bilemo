@@ -33,3 +33,15 @@ $ mkdir config/jwt
 $ openssl genrsa -out config/jwt/private.pem -aes256 4096
 $ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 ```
+
+## Documentation API - Swagger
+```
+https://localhost:8000/swagger/
+```
+## Login d'utilisateur test
+```
+{
+  "username": "email+1@email.com",
+  "password": "password"
+}
+```
