@@ -8,6 +8,7 @@ use App\Entity\Customer;
 use App\Entity\User;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Lcobucci\JWT\Token;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -46,7 +47,6 @@ class CustomerController extends AbstractFOSRestController
         $this->router = $router;
         if ($tokenStorage->getToken()->getUser()){
             $this->currentUser = $tokenStorage->getToken()->getUser();
-            $this->customers = $customerRepository->findBy(["user" => $this->currentUser->getId()]);
         }
 
     }
@@ -72,6 +72,8 @@ class CustomerController extends AbstractFOSRestController
      * @param SerializerInterface $serializer
      * @param TokenStorageInterface $tokenStorage
      * @param CacheInterface $cache
+     * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return JsonResponse
      * @throws InvalidArgumentException
      */
@@ -79,11 +81,21 @@ class CustomerController extends AbstractFOSRestController
         CustomerRepository $customerRepository,
         SerializerInterface $serializer,
         TokenStorageInterface $tokenStorage,
-        CacheInterface $cache
+        CacheInterface $cache,
+        Request $request,
+        PaginatorInterface $paginator
     ): JsonResponse
     {
-        $customers = $cache->get('customers', function () {
-            return $this->customers;
+        $donnees = $this->getDoctrine()->getRepository(Customer::class)->findby([],
+            ["user" => $this->currentUser->getId()]);
+        $req = $request->query->getInt('page', 1);
+
+        $customers = $cache->get('customers'. $req, function () use ($req, $request, $donnees, $paginator) {
+            return $paginator->paginate(
+                $donnees,
+                $req,
+                2
+            );
         });
 
         return new JsonResponse(
@@ -183,7 +195,7 @@ class CustomerController extends AbstractFOSRestController
      *
      *     ),
      *     @OA\Response(
-     *          response="200",
+     *          response="201",
      *          description="Customer create",
      *          @OA\JsonContent(ref="#/components/schemas/Customer"),
      *     )
@@ -256,9 +268,9 @@ class CustomerController extends AbstractFOSRestController
      *     }},
      *     @OA\Parameter(ref="#/components/parameters/id"),
      *     @OA\Response(
-     *          response="200",
+     *          response="204",
      *          description="Customer delete",
-     *          @OA\JsonContent(ref="#/components/schemas/Customer"),
+     *          @OA\JsonContent(ref="#/components/responses/ResourceDelete"),
      *     ),
      *     @OA\Response(response="404", ref="#/components/responses/NotFound"),
      *     @OA\Response(response="400", ref="#/components/responses/InvalidID"),

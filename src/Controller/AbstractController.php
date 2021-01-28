@@ -42,6 +42,14 @@ use OpenApi\Annotations as OA;
  *     )
  * )
  *
+ * @OA\Response(
+ *     response="ResourceDelete",
+ *     description="Resource delete or notfound",
+ *     @OA\JsonContent(
+ *          @OA\Property(property="message", type="string", example="JWT Token not found")
+ *     )
+ * )
+ *
  */
 class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
