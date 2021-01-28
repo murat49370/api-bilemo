@@ -73,7 +73,7 @@
                     }
                 },
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "Customer create",
                         "content": {
                             "application/json": {
@@ -86,7 +86,7 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearer": []
                     }
                 ]
             }
@@ -126,7 +126,7 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearer": []
                     }
                 ]
             },
@@ -142,12 +142,12 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "204": {
                         "description": "Customer delete",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Customer"
+                                    "$ref": "#/components/responses/ResourceDelete"
                                 }
                             }
                         }
@@ -164,7 +164,7 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearer": []
                     }
                 ]
             }
@@ -196,7 +196,7 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearer": []
                     }
                 ]
             }
@@ -236,7 +236,7 @@
                 },
                 "security": [
                     {
-                        "scalar": "bearer"
+                        "bearer": []
                     }
                 ]
             }
@@ -330,6 +330,22 @@
             },
             "TokenNotFound": {
                 "description": "Token not found",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "properties": {
+                                "message": {
+                                    "type": "string",
+                                    "example": "JWT Token not found"
+                                }
+                            },
+                            "type": "object"
+                        }
+                    }
+                }
+            },
+            "ResourceDelete": {
+                "description": "Resource delete or notfound",
                 "content": {
                     "application/json": {
                         "schema": {

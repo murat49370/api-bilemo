@@ -6,9 +6,11 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -26,12 +28,10 @@ class ProductController extends AbstractController
 
     private UrlGeneratorInterface $router;
 
-    private $products;
 
     public function __construct(UrlGeneratorInterface $router, ProductRepository $productRepository)
     {
         $this->router = $router;
-        $this->products = $productRepository->findAll();
     }
 
     /**
@@ -54,14 +54,28 @@ class ProductController extends AbstractController
      * @param ProductRepository $productRepository
      * @param SerializerInterface $serializer
      * @param CacheInterface $cache
+     * @param Request $request
+     * @param PaginatorInterface $paginator
      * @return JsonResponse
      * @throws InvalidArgumentException
      */
-    public function collection(ProductRepository $productRepository, SerializerInterface $serializer, CacheInterface $cache): JsonResponse
+    public function collection(
+        ProductRepository $productRepository,
+        SerializerInterface $serializer,
+        CacheInterface $cache,
+        Request $request,
+        PaginatorInterface $paginator
+    ): JsonResponse
     {
+        $donnees = $this->getDoctrine()->getRepository(Product::class)->findAll();
+        $req = $request->query->getInt('page', 1);
 
-        $products = $cache->get('products', function () {
-            return $this->products;
+        $products = $cache->get('products'. $req, function () use ($req, $request, $donnees, $paginator) {
+            return $paginator->paginate(
+                $donnees,
+                $req,
+                2
+            );
         });
 
         return new JsonResponse(
