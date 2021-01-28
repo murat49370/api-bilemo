@@ -38,7 +38,7 @@ $ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem
 ```
 https://localhost:8000/swagger/
 ```
-## Login d'utilisateur test
+## Login utilisateur test
 ```
 {
   "username": "email+1@email.com",

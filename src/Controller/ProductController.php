@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Repository\ProductRepository;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,6 +14,7 @@ use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 use OpenApi\Annotations as OA;
+use Symfony\Contracts\Cache\CacheInterface;
 
 /**
  * Class ProductController
@@ -24,9 +26,12 @@ class ProductController extends AbstractController
 
     private UrlGeneratorInterface $router;
 
-    public function __construct(UrlGeneratorInterface $router)
+    private $products;
+
+    public function __construct(UrlGeneratorInterface $router, ProductRepository $productRepository)
     {
         $this->router = $router;
+        $this->products = $productRepository->findAll();
     }
 
     /**
@@ -48,12 +53,19 @@ class ProductController extends AbstractController
      * @Route(name="api_products_collection_get", methods={"GET"})
      * @param ProductRepository $productRepository
      * @param SerializerInterface $serializer
+     * @param CacheInterface $cache
      * @return JsonResponse
+     * @throws InvalidArgumentException
      */
-    public function collection(ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
+    public function collection(ProductRepository $productRepository, SerializerInterface $serializer, CacheInterface $cache): JsonResponse
     {
+
+        $products = $cache->get('products', function () {
+            return $this->products;
+        });
+
         return new JsonResponse(
-            $serializer->serialize($productRepository->findAll(), "json", ["groups" => "get"]),
+            $serializer->serialize($products, "json", ["groups" => "get"]),
             JsonResponse::HTTP_OK,
             [],
             true
@@ -87,7 +99,9 @@ class ProductController extends AbstractController
     public function item(Product $product, SerializerInterface $serializer): JsonResponse
     {
         $absoluteUrl = $this->router->generate('api_products_item_get', ['id' => $product->getId()], urlGeneratorInterface::ABSOLUTE_URL);
-        
+
+
+
         $response = [
             'id' => $product->getId(),
             'title' => $product->getTitle(),
