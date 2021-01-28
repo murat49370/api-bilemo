@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Repository\CustomerRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Lcobucci\JWT\Token;
+use Psr\Cache\InvalidArgumentException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +24,7 @@ use OpenApi\Annotations as OA;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Request\ParamFetcherInterface;
-
+use Symfony\Contracts\Cache\CacheInterface;
 
 
 /**
@@ -36,9 +37,18 @@ class CustomerController extends AbstractFOSRestController
 
     private UrlGeneratorInterface $router;
 
-    public function __construct(UrlGeneratorInterface $router)
+    private ?array $customers;
+
+    private ?User $currentUser;
+
+    public function __construct(UrlGeneratorInterface $router, CustomerRepository $customerRepository, TokenStorageInterface $tokenStorage)
     {
         $this->router = $router;
+        if ($tokenStorage->getToken()->getUser()){
+            $this->currentUser = $tokenStorage->getToken()->getUser();
+            $this->customers = $customerRepository->findBy(["user" => $this->currentUser->getId()]);
+        }
+
     }
 
     /**
@@ -61,20 +71,23 @@ class CustomerController extends AbstractFOSRestController
      * @param CustomerRepository $customerRepository
      * @param SerializerInterface $serializer
      * @param TokenStorageInterface $tokenStorage
+     * @param CacheInterface $cache
      * @return JsonResponse
-     *
-     *
+     * @throws InvalidArgumentException
      */
     public function collection(
         CustomerRepository $customerRepository,
         SerializerInterface $serializer,
-        TokenStorageInterface $tokenStorage
+        TokenStorageInterface $tokenStorage,
+        CacheInterface $cache
     ): JsonResponse
     {
-        /** @var User $user */
-        $user = $tokenStorage->getToken()->getUser();
+        $customers = $cache->get('customers', function () {
+            return $this->customers;
+        });
+
         return new JsonResponse(
-            $serializer->serialize($customerRepository->findBy(["user" => $user->getId()]), "json", ["groups" => "get"]),
+            $serializer->serialize($customers, "json", ["groups" => "get"]),
             JsonResponse::HTTP_OK,
             [],
             true
